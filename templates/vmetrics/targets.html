@@ -64,13 +64,21 @@
 </div>
 <script type="text/javascript" src="/assets/plugins/bootstrap-table/dist/bootstrap-table.min.js"></script>
 <script type="text/javascript">
+    var sUrl = window.location.pathname.split('/')
+
     var Update = class {
 
-        update5() {
+        update1() {
+
             var targets = [];
 
             $.ajax({
-                url: 'http://localhost:9090/api/v1/targets',
+                url: '/api/v1/targets',
+                beforeSend: function(request) {
+                    if (sUrl.length > 2) {
+                        request.setRequestHeader("X-Proxy-Prometheus", sUrl[2]);
+                    }
+                },
                 success: function(jsn) {
                     $.each(jsn.data.activeTargets, function(key, value) {
                         var nowTime = new Date()
@@ -85,39 +93,6 @@
                         });
 
                     });
-
-                    /*
-                    alerts.sort(function(a, b) {
-                        return a['repeat'] - b['repeat'];
-                    });
-
-                    $.each(widget, function(key, value) {
-                        var prc = 0;
-                        if (jsn.data.alerts.length > 0) {
-                            prc = Math.round(100 * widget[key] / jsn.data.alerts.length);
-                        }
-                        $('#widget-' + key + ' .progress-bar').attr('style', 'width: ' + prc + '%;');
-                        $('#widget-' + key + ' .stats-desc').text('Percentage (' + prc + '%)');
-
-                        $('#widget-' + key + ' .stats-number').text(value);
-                        if (widget[key] > 0) {
-                            $('#widget-' + key).removeClass("bg-dark").addClass("bg-" + key);
-                        } else {
-                            $('#widget-' + key).removeClass("bg-red bg-orange bg-teal").addClass("bg-dark");
-                        }
-
-
-
-                        //if ($('.widget.widget-stats' + key).length > 0) {
-                        //    var prc = Math.round(100 * value / widget[key]);
-                        //    $('.widget.widget-stats' + key + ' .stats-number').text(value);
-                        //    $('.widget.widget-stats' + key + ' .progress-bar').attr('style', 'width: ' + prc + '%;');
-                        //    $('.widget.widget-stats' + key + ' .stats-desc').text('Text (' + prc + '%)');
-                        //} else {
-                        //
-                        //}
-                    });
-                    */
 
                     $('#targets').bootstrapTable({
                         pagination: true,
@@ -135,13 +110,12 @@
 
             });
 
-            //del(targets);
         }
 
     }
 
     $(function() {
         update = new Update();
-        update.update5();
+        update.update1();
     });
 </script>

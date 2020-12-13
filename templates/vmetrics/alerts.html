@@ -24,7 +24,7 @@
                                         <tr>
                                             <th data-field="alertname">Alertname</th>
                                             <th data-field="state">State</th>
-                                            <th data-field="activeAt">ActiveAt</th>
+                                            <th data-field="activeAt" class="datePicker">ActiveAt</th>
                                             <th data-field="value">value</th>
                                             <th data-field="description">Description</th>
                                         </tr>
@@ -63,22 +63,37 @@
 </div>
 <script type="text/javascript" src="/assets/plugins/bootstrap-table/dist/bootstrap-table.min.js"></script>
 <script type="text/javascript">
+    var sUrl = window.location.pathname.split('/')
+
+    $('#alerts').bootstrapTable({
+        pagination: true,
+        search: true,
+        classes: "table table-responsive-sm table-sm",
+        pageSize: 100
+    });
+
+
+
     var Update = class {
 
         update10() {
             var alerts = [];
-            //var dateFormat = require('dateformat');
 
             $.ajax({
-                url: 'http://localhost:9090/api/v1/alerts',
+                url: '/api/v1/alerts',
+                beforeSend: function(request) {
+                    if (sUrl.length > 2) {
+                        request.setRequestHeader("X-Proxy-Prometheus", sUrl[2]);
+                    }
+                },
                 success: function(jsn) {
                     $.each(jsn.data.alerts, function(key, value) {
-                        var activeAtTime = Date.parse(value['activeAt']);
+                        var aa = new Date(value['activeAt']);
                         alerts.push({
                             state: '<label class="label label-' + value['state'] + '">' + value['state'] + '</label>',
                             alertname: value['labels']['alertname'] || 'unknown',
-                            activeAt: activeAtTime,
-                            value: value['value'] || 1,
+                            //activeAt: aa,
+                            value: Number(value['value']) || 1,
                             description: value['annotations']['description'] || '',
                         });
                     });
@@ -116,14 +131,15 @@
                     });
                     */
 
-                    $('#alerts').bootstrapTable({
-                        pagination: true,
-                        search: true,
-                        classes: "table table-responsive-sm table-sm",
-                        pageSize: 100
-                    });
+
                     //$('#alerts').bootstrapTable('pageSize', 100);
                     $('#alerts').bootstrapTable('load', alerts);
+
+                    var aa = new Date();
+                    $('.datePicker').datepicker({
+                        format: 'mm/dd/yyyy'
+                    });
+                    $('.datePicker').datepicker('setDate', aa);
                     //console.log();
 
                     //console.log('test');

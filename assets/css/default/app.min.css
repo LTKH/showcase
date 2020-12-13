@@ -28504,6 +28504,7 @@ a:focus {
     display: inline-block;
     min-width: 10px;
     padding: 4px 7px;
+    margin: 0px 10px;
     color: #fff;
     text-align: center;
     white-space: nowrap;
