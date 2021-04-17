@@ -143,9 +143,10 @@
             widget['orange'] = 0;
             widget['teal'] = 0;
             widget['dark'] = 0;
+            console.log(options);
 
             $.ajax({
-                url: '/api/v1/alerts',
+                url: options['href'],
                 success: function(jsn) {
                     $.each(jsn.data.alerts, function(key, value) {
                         switch (value['state'] || 'firing') {

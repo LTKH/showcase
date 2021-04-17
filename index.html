@@ -68,10 +68,16 @@
 </body>
 
 <script type="text/javascript" src="/assets/js/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/js/app.min.js"></script>
+<script type="text/javascript" src="/assets/js/theme/default.min.js"></script>
 
+<script type="text/javascript" src="/templates/templates.js"></script>
+<script type="text/javascript" src="/assets/js/tree.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/bootstrap/js/bootstrap.js"></script>
 
 <script>
     var update = {};
+    var options = {};
 
     setInterval(function() {
         if (typeof(update.update1) !== 'undefined') {
@@ -105,45 +111,33 @@
 
     function loadPage(url) {
         history.pushState('', 'Showcase', url);
+        options = menu[url]['options'];
 
-        $.each(templates, function(key, value) {
-            var re = new RegExp(value['url']);
-            if (re.test(url)) {
-                //console.log(value['tmpl']);
-                $.ajax({
-                    url: value['tmpl'],
-                    success: function(html) {
-                        //$("#content").empty();
-                        $("#content").html(html);
-                        //history.pushState('', 'alertstrap', url)
-                    }
-                });
-                return false;
-            }
-        });
+        if (menu[url]['template'] != '') {
+            $.ajax({
+                url: menu[url]['template'],
+                success: function(html) {
+                    //$("#content").empty();
+                    $("#content").html(html);
+                    //history.pushState('', 'alertstrap', url)
+                }
+            });
+        }
+        return false;
     }
 
     $(function() {
         $.ajax({
             url: '/api/v1/menu',
             success: function(jsn) {
-                $('#menu').treeControl({
-                    action: 'create',
-                    data: jsn.data
-                });
+                $('#menu').treeControl({ action: 'create', data: jsn.data });
+                loadPage(window.location.pathname);
             }
         });
-
-        loadPage(window.location.pathname);
     });
 </script>
 
-<script type="text/javascript" src="/assets/js/app.min.js"></script>
-<script type="text/javascript" src="/assets/js/theme/default.min.js"></script>
 
-<script type="text/javascript" src="/assets/js/tree.min.js"></script>
-<script type="text/javascript" src="/templates/templates.js"></script>
-<script type="text/javascript" src="/assets/plugins/bootstrap/js/bootstrap.js"></script>
 
 </body>
 

@@ -1,0 +1,10 @@
+{
+    "apps": {
+        "12345": {
+            "url": "http://localhost:8080/test.json"
+        },
+        "12346": {
+            "url": "http://test1/34547"
+        }
+    }
+}
