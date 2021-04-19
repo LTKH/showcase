@@ -14122,6 +14122,7 @@ select.form-control:focus::-ms-value {
 }
 
 .search-input {
+    width: 300px;
     height: calc(1.5em + 0.5rem + 2px);
     padding: .25rem .5rem;
     font-size: .765625rem;

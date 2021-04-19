@@ -1,7 +1,8 @@
 var templates = [
+    { 'url': '^/netmap', 'tmpl': '/templates/netmap/main.html' },
     { 'url': '^/kubernetes.*', 'tmpl': '/templates/alerts.html' },
-    { 'url': '^/vmetrics/[^/]+/targets', 'tmpl': '/templates/vmetrics/targets.html' },
-    { 'url': '^/vmetrics/[^/]+/alerts', 'tmpl': '/templates/vmetrics/alerts.html' },
+    { 'url': '^/vmetrics/targets', 'tmpl': '/templates/vmetrics/targets.html' },
+    { 'url': '^/vmetrics/alerts', 'tmpl': '/templates/vmetrics/alerts.html' },
     { 'url': '^/prometheus/[^/]+/targets', 'tmpl': '/templates/vmetrics/targets.html' },
     { 'url': '^/prometheus/[^/]+/alerts', 'tmpl': '/templates/vmetrics/alerts.html' },
     { 'url': '^/vmetrics.*', 'tmpl': '/templates/vmetrics/graph.html' },
