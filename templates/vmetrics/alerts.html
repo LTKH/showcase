@@ -78,10 +78,10 @@
             var alerts = [];
 
             $.ajax({
-                url: '/api/v1/alerts',
+                url: menu[window.location.pathname]['options']['href'],
                 beforeSend: function(request) {
                     if (sUrl.length > 2) {
-                        request.setRequestHeader("X-Proxy-Prometheus", sUrl[2]);
+                        request.setRequestHeader("X-Proxy-VMetrics", sUrl[2]);
                     }
                 },
                 success: function(jsn) {

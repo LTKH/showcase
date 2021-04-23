@@ -146,7 +146,7 @@
             console.log(options);
 
             $.ajax({
-                url: options['href'],
+                url: menu[window.location.pathname]['options']['href'],
                 success: function(jsn) {
                     $.each(jsn.data.alerts, function(key, value) {
                         switch (value['state'] || 'firing') {

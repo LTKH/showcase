@@ -4,6 +4,86 @@
 
     <div class="col-xl">
 
+        <div class="panel panel-inverse">
+            <!-- begin panel-heading -->
+            <div class="panel-heading bg-dark text-silver">
+                <h4 class="panel-title">Search</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+                </div>
+            </div>
+            <!-- end panel-heading -->
+            <!-- begin panel-body -->
+            <div class="panel-body text-silver" style="display:none;">
+                <div class="row row-space-30">
+                    <!-- begin col-4 -->
+                    <div class="col-xl-4">
+                        <div class="m-b-2 text-silver f-w-600 f-s-16">Sourse</div>
+                        <div class="form-group row m-b-15">
+                            <label class="col-form-label col-md-3">Name</label>
+                            <div class="col-md-9">
+                                <input id="src_name" type="text" class="form-control m-b-5" placeholder="Sourse Name">
+                                <small class="f-s-12 text-grey-darker">can use regular expressions</small>
+                            </div>
+                        </div>
+                        <div class="form-group row m-b-15">
+                            <label class="col-form-label col-md-3">IP</label>
+                            <div class="col-md-9">
+                                <input id="src_ip" type="text" class="form-control m-b-5" placeholder="Sourse IP">
+                                <small class="f-s-12 text-grey-darker">can use regular expressions</small>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end col-4 -->
+                    <!-- begin col-4 -->
+                    <div class="col-xl-4">
+                        <div class="m-b-2 text-silver f-w-600 f-s-16">Destination</div>
+                        <div class="form-group row m-b-15">
+                            <label class="col-form-label col-md-3">Name</label>
+                            <div class="col-md-9">
+                                <input id="dst_name" type="text" class="form-control m-b-5" placeholder="Destination Name">
+                                <small class="f-s-12 text-grey-darker">can use regular expressions</small>
+                            </div>
+                        </div>
+                        <div class="form-group row m-b-15">
+                            <label class="col-form-label col-md-3">IP</label>
+                            <div class="col-md-9">
+                                <input id="dst_ip" type="text" class="form-control m-b-5" placeholder="Destination IP">
+                                <small class="f-s-12 text-grey-darker">can use regular expressions</small>
+                            </div>
+                        </div>
+                        <!-- end row -->
+                    </div>
+                    <!-- end col-4 -->
+                    <!-- begin col-4 -->
+                    <div class="col-xl-4">
+                        <div class="m-b-2 text-silver f-w-600 f-s-16">Relation</div>
+                        <div class="form-group row m-b-15">
+                            <label class="col-form-label col-md-3">Port</label>
+                            <div class="col-md-9">
+                                <input id="rel_port" type="text" class="form-control m-b-5" placeholder="Relation Port">
+                                <small class="f-s-12 text-grey-darker">&nbsp;</small>
+                            </div>
+                        </div>
+                        <div class="form-group row m-b-15">
+                            <label class="col-form-label col-md-3">Mode</label>
+                            <div class="col-md-9">
+                                <input id="rel_mode" type="text" class="form-control m-b-5" placeholder="Relation Mode">
+                                <small class="f-s-12 text-grey-darker">&nbsp;</small>
+                            </div>
+                        </div>
+                        <!-- end row -->
+                    </div>
+                    <!-- end col-4 -->
+                </div>
+                <!-- end row -->
+                <div class="float-right">
+                    <button id="search" type="submit" class="btn btn-sm btn-primary m-r-5">Search</button>
+                </div>
+            </div>
+            <!-- end panel-body -->
+        </div>
+
         <div class="card border-0 mb-3 overflow-hidden bg-dark text-silver">
 
             <div class="card-body">
@@ -48,6 +128,8 @@
 <script type="text/javascript" src="/assets/plugins/bootstrap-table/dist/bootstrap-table.min.js"></script>
 <script type="text/javascript">
 
+    var data = {};
+
     $('#records').bootstrapTable({
         pagination: true,
         search: true,
@@ -55,49 +137,57 @@
         pageSize: 100
     });
 
-    var Update = class {
+    $('#search').on('click', function(event) {
+        data = {};
+        $.each(['src_name','src_ip','dst_name','dst_ip','rel_port','rel_mode'], function(key, value) {
+            if ($('#'+value).val() != "") {
+                data[value] = $('#'+value).val();
+            }
+        });
+        update_records();
+    });
 
-        update60() {
-            var records = [];
+    function update_records() {
 
-            $.ajax({
-                url: menu[window.location.pathname]['options']['href'],
-                success: function(jsn) {
-                    $.each(jsn.data, function(key, value) {
-                        var rs = (value['relation']['result'] == 0) ? 'ok' : 'firing';
-                        records.push({
-                            result:   '<label class="label label-' + rs + '">' + rs + '</label>',
-                            src_name: value['localAddr']['name'],
-                            src_ip:   value['localAddr']['ip'],
-                            dst_name: value['remoteAddr']['name'],
-                            dst_ip:   value['remoteAddr']['ip'],
-                            mode:     value['relation']['mode'],
-                            port:     value['relation']['port'],
-                            status:   value['relation']['status'],
-                        });
+        var records = [];
+
+        $.ajax({
+            url: menu[window.location.pathname]['options']['href'],
+            //type: 'POST',
+            data: data,
+            success: function(jsn) {
+                $.each(jsn.data, function(key, value) {
+                    var rs = (value['relation']['result'] == 0) ? 'ok' : 'firing';
+                    records.push({
+                        result:   '<label class="label label-' + rs + '">' + rs + '</label>',
+                        src_name: value['localAddr']['name'],
+                        src_ip:   value['localAddr']['ip'],
+                        dst_name: value['remoteAddr']['name'],
+                        dst_ip:   value['remoteAddr']['ip'],
+                        mode:     value['relation']['mode'],
+                        port:     value['relation']['port'],
+                        status:   value['relation']['status'],
                     });
+                });
 
-                    //records.sort(function(a, b) {
-                    //    return b['result'] - a['result'];
-                    //});
+                //records.sort(function(a, b) {
+                //    return b['result'] - a['result'];
+                //});
 
-                    //$('#records').bootstrapTable('pageSize', 100);
-                    $('#records').bootstrapTable('load', records);
+                //$('#records').bootstrapTable('pageSize', 100);
+                $('#records').bootstrapTable('load', records);
 
-                    
-                    //console.log();
+                
+                //console.log();
 
-                    //console.log('test');
-                }
+                //console.log('test');
+            }
 
 
-            });
-        }
-
+        });
     }
 
     $(function() {
-        update = new Update();
-        update.update60();
+        update_records();
     });
 </script>
